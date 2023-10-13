@@ -1,45 +1,60 @@
-$substrings_list = []
+class Board
+    attr_accessor :board, :possible_moves
 
-def substrings (word, dictionary)
-    dictionary = dictionary.map {|str| str.downcase}
-    word = word.downcase
-    $size = word.length
-    hash = {}
+    def initialize 
+        @board = []
+        @possible_moves = [[1, 2] , [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
+    end
 
-    find_subs(word)
+    def knight_moves(starting_node, end_node, queue = [starting_node])
+        path = []
+        until queue[0] == end_node
+            if queue[0].visited = false
+                queue[0].visited = true
+                path.push(queue[0])
+            end
+            queue[0].shift()
+            generate_paths(queue[0]).map {|arr| queue.push(arr)} 
+        end
+        path.push(queue[0])
+        path
+        
+    end
 
-    $substrings_list.each do |sub_string|
-        dictionary.each do |dict_word|
-            if sub_string == dict_word
-                if hash[sub_string] != nil
-                    hash[sub_string] += 1
-                else
-                    hash[sub_string] = 1
-                end
+    def generate_paths(node)
+        legal_moves = []
+
+        self.possible_moves.map do |combo|
+            if node.x + combo[0] > 7 || node.y + combo[1] > 7
+                #ilegal move
+            elsif node.x + combo[0] < 0 || node.y + combo[1] < 0
+                #ilegal move
+            else
+                legal_moves.push([node.x + combo[0], node.y + combo[1]])
             end
         end
+        legal_moves
     end
 
-    return hash
+
 end
+   
+class Node
+    attr_accessor :x, :y, :visited 
 
-def find_subs (word, index=0, target=0)
-    if word.empty?
-        return
-    end
-    
-    while target < word.length
-        $substrings_list.push(word[index..target]) 
-        target+=1
-    end
-
-    if index<=$size
-        word = word[1..-1]
-        find_subs(word, index=0, target=0)
-    else
-        return
+    def initialize(x, y)
+        @x = x
+        @y = y
+        @visited = false
     end
 end
 
-# list = ["below","down","go","going","horn","how","howdy","it","i","low","own","part","partner","sit"]
-# substrings("Howdy partner, sit down! How's it going?", list)
+
+
+# starting_node = Node.new(starting_node[0], starting_node[1])
+# end_node = Node.new(end_node[0], end_node[1])
+
+
+test_node = Node.new(3, 3)
+b = Board.new
+p b.generate_paths(test_node)
