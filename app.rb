@@ -1,26 +1,20 @@
 class Board
-    attr_accessor :possible_moves
 
-    def initialize 
-        @possible_moves = [[1, 2] , [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]]
-    end
+    POSSIBLE_MOVES = [[1, 2] , [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, 1], [-2, -1]].freeze
 
     def knight_moves(starting_node, end_node, queue = [starting_node])
         until queue[0].x == end_node.x && queue[0].y == end_node.y
-            if queue[0].visited == false
-                queue[0].visited = true
-            end
+            queue[0].visited == false ? queue[0].visited = true : '' 
             generate_paths(queue[0]).map {|arr| queue.push(Node.new(arr[0], arr[1], queue[0]))} 
             queue.shift()
         end
         puts "You made it in #{get_path(queue[0]).length - 1} moves! Here's your path:"
         puts "#{get_path(queue[0])}"
     end
-
     def generate_paths(node)
         legal_moves = []
 
-        self.possible_moves.map do |combo|
+        POSSIBLE_MOVES.map do |combo|
             if node.x + combo[0] > 7 || node.y + combo[1] > 7
                 #ilegal move
             elsif node.x + combo[0] < 0 || node.y + combo[1] < 0
@@ -31,7 +25,6 @@ class Board
         end
         legal_moves
     end
-
     def get_path (node)
         path = []
         until node.ptr.nil?
@@ -54,10 +47,8 @@ class Node
     end
 end
 
-
-test_node = Node.new(0, 0)
-test_node_2 = Node.new(7, 7)
-
+test_node = Node.new(3, 3)
+test_node_2 = Node.new(4, 3)
 
 b = Board.new
 b.knight_moves(test_node, test_node_2)
